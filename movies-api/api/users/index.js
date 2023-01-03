@@ -12,6 +12,15 @@ router.get('/', async (req, res) => {
     res.status(200).json(users);
 });
 
+// Get a user
+router.get('/:userName', (req, res, next) => {
+  const userName = req.params.userName;
+  User.findByUserName(userName).then(
+    user => res.status(201).json(user)
+  ).catch(next);
+});
+
+
 // Register OR authenticate a user
 router.post('/',asyncHandler( async (req, res, next) => {
     if (!req.body.username || !req.body.password) {
@@ -51,6 +60,19 @@ router.post('/',asyncHandler( async (req, res, next) => {
     }
 });
 
+// Delete a user
+router.delete('/:id', async (req, res) => {
+  if (req.body._id) delete req.body._id;
+  const result = await User.deleteOne({
+      _id: req.params.id,
+  }, req.body);
+  if (result.matchedCount) {
+    res.status(404).json({ code:404, msg: 'User failed to delete' });
+} else {
+    res.status(200).json({ code: 200, msg: 'User Deleted Successfully' });
+}
+});
+
 //Add a favourite. No Error Handling Yet. Can add duplicates too!
 router.post('/:userName/favourites', asyncHandler(async (req, res) => {
     const newFavourite = req.body.id;
@@ -78,5 +100,6 @@ router.post('/:userName/favourites', asyncHandler(async (req, res) => {
     const user = await User.findByUserName(userName).populate('favourites');
     res.status(200).json(user.favourites);
   }));
+
 
 export default router;

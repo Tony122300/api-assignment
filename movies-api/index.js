@@ -8,7 +8,7 @@ import usersRouter from './api/users';
 //import session from 'express-session';
 import authenticate from './authenticate';
 import passport from './authenticate';
-import subsRouter from './api/subs'
+import subsRouter from './api/subs';
 dotenv.config();
 
 const errHandler = (err, req, res, next) => {
