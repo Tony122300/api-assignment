@@ -5,7 +5,8 @@ import users from './users';
 import dotenv from 'dotenv';
 import genres from './genres';
 import movies from './movies.js';
-
+import subModel from '../api/subs/subModel';
+import subs from './subs';
 dotenv.config();
 
 // deletes all user documents in collection and inserts test data
@@ -44,8 +45,21 @@ export async function loadMovies() {
     }
   }
 
+  async function loadSubs() {
+    console.log('load subs Data');
+    try {
+      await subModel.deleteMany();
+      await subs.forEach(sub => subModel.create(sub));
+      console.info(`${subs.length} subs were successfully stored.`);
+    } catch (err) {
+      console.error(`failed to Load sub Data: ${err}`);
+    }
+  }
+  
+
 if (process.env.SEED_DB) {
   loadUsers();
   loadGenres();
   loadMovies();
+  loadSubs();
 }
